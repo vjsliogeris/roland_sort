@@ -29,7 +29,7 @@ class RolandNode:
     def __handle_remainder(self):
         print(f'{len(self.remainders)} remaining for {self.value}')
         item = self.remainders.pop()
-        print(f'{self.value} (1) VS {item} (2)')
+        print(f'(1):{self.value}\nVS\n(2):{item} ')
         selected = False
         while not selected:
             keypress = input('')
