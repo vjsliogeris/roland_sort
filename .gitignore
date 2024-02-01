@@ -1,3 +1,4 @@
 *.txt
 *.npy
 .venv/
+__pycache__/
