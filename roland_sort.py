@@ -2,10 +2,12 @@
 from pathlib import Path
 import argparse
 import pickle
+import datetime
 
 class RolandNode:
 
-    def __init__(self, value: str):
+    def __init__(self, caller, value: str):
+        self.superitem = caller
         self.value = value
         self.left = None
         self.right = None
@@ -33,11 +35,13 @@ class RolandNode:
                         selected = True
                     else:
                         print('Please enter a value (1 or 2)')
+                self.save()
+                
             if self.less:
-                self.left = RolandNode(self.less[0])
+                self.left = RolandNode(self, self.less[0])
                 self.left.sort(self.less[1:])
             if self.more:
-                self.right = RolandNode(self.more[0])
+                self.right = RolandNode(self, self.more[0])
                 self.right.sort(self.more[1:])
 
     def flatten(self) -> list:
@@ -52,9 +56,13 @@ class RolandNode:
         return output
 
 
+    def save(self):
+        self.superitem.save()
+
+
 class RolandTree:
     def __init__(self, items: list):
-        self.root = RolandNode(items[0])
+        self.root = RolandNode(self, items[0])
         self.remainders = items[1:]
     
     def query_sort(self):
@@ -66,6 +74,18 @@ class RolandTree:
     def sorting(self):
         items = self.root.flatten()
         return items
+
+    def save(self):
+        savefolder = Path('intermediates/')
+        if not savefolder.exists():
+            savefolder.mkdir()
+        presentDate = datetime.datetime.now()
+        unix_timestamp = datetime.datetime.timestamp(presentDate)*1000
+        namebody = str(int(unix_timestamp))
+        filename = 'intermediates/' + namebody + '.npy'
+        file = open(filename, 'wb')
+        pickle.dump(self, file)
+
 
 
 def main(args):
