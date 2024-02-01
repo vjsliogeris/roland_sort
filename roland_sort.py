@@ -83,6 +83,10 @@ class RolandTree:
         self.root.add_value(items[0])
         self.root.append_remainders(items[1:])
     
+    def add_savefile(self, savefile):
+        self.savefile = savefile
+        print(savefile)
+    
     def query_sort(self):
         self.root.sort()
     
@@ -94,14 +98,7 @@ class RolandTree:
         return items
 
     def save(self):
-        savefolder = Path('intermediates/')
-        if not savefolder.exists():
-            savefolder.mkdir()
-        presentDate = datetime.datetime.now()
-        unix_timestamp = datetime.datetime.timestamp(presentDate)*1000
-        namebody = str(int(unix_timestamp))
-        filename = 'intermediates/' + namebody + '.npy'
-        file = open(filename, 'wb')
+        file = open(self.savefile, 'wb')
         pickle.dump(self, file)
 
 
@@ -109,15 +106,24 @@ class RolandTree:
 def main(args):
     file_path = Path(args.filename)
     extension = file_path.suffix
+    if not args.savefile:
+        presentDate = datetime.datetime.now()
+        unix_timestamp = datetime.datetime.timestamp(presentDate)*1000
+        namebody = str(int(unix_timestamp))
+        savefile = namebody + '.npy'
+    else:
+        savefile = args.savefile
     if extension == '.txt':
         items = []
         file = file_path.open()
         for line in file.readlines():
             items.append(line.strip())
         tree = RolandTree(items)
+        tree.add_savefile(savefile)
     elif extension == '.npy':
         file = open(file_path, 'rb')
         tree = pickle.load(file)
+        tree.add_savefile(savefile)
     else:
         raise Exception(f'Unrecognised file extension: {extension}')
     tree.query_sort()
@@ -133,5 +139,6 @@ if __name__ == "__main__":
                     description='Sort via bubble sort + saving',
                     epilog='Vytenis :)')
     parser.add_argument('filename')
+    parser.add_argument('-s', '--savefile') 
     args = parser.parse_args()
     main(args)
