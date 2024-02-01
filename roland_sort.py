@@ -109,13 +109,14 @@ class RolandTree:
 def main(args):
     file_path = Path(args.filename)
     extension = file_path.suffix
-    file = file_path.open()
     if extension == '.txt':
         items = []
+        file = file_path.open()
         for line in file.readlines():
             items.append(line.strip())
         tree = RolandTree(items)
     elif extension == '.npy':
+        file = open(file_path, 'rb')
         tree = pickle.load(file)
     else:
         raise Exception(f'Unrecognised file extension: {extension}')
