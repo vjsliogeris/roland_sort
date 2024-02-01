@@ -26,11 +26,11 @@ def main(args):
         for line in file.readlines():
             items.append(line.strip())
         tree = RolandTree(items)
-        tree.add_savefile(savefile)
+        tree.savefile = savefile
     elif extension == '.npy':
         file = open(file_path, 'rb')
         tree = pickle.load(file)
-        tree.add_savefile(savefile)
+        tree.savefile = savefile
     else:
         raise Exception(f'Unrecognised file extension: {extension}')
 
@@ -40,6 +40,7 @@ def main(args):
     output = ''
     for i, item in enumerate(items_sorted):
         output += f'{i+1}: {item}\n'
+    print('Results!')
     print(output)
     result_filename = tree.savefile.split('.')[0]
     result_filename += '_results.txt'

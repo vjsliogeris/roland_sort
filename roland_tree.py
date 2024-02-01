@@ -8,18 +8,22 @@ class RolandTree:
         self.root = RolandNode(self)
         self.root.add_value(items[0])
         self.root.append_remainders(items[1:])
+
+        self._savefile = None
     
-    def add_savefile(self, savefile):
-        ext = savefile.split('.')[1]
+    @property
+    def savefile(self):
+        return self._savefile
+    
+    @savefile.setter
+    def savefile(self, savefile_new):
+        ext = savefile_new.split('.')[1]
         if ext != 'npy':
             raise Exception('Please have the file extension be \'.npy\'')
-        self.savefile = savefile
+        self._savefile = savefile_new
     
     def query_sort(self):
         self.root.sort()
-    
-    def __str__(self):
-        print(self.root)
     
     def sorting(self):
         items = self.root.flatten()
@@ -28,5 +32,3 @@ class RolandTree:
     def save(self):
         file = open(self.savefile, 'wb')
         pickle.dump(self, file)
-
-
