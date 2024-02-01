@@ -6,50 +6,67 @@ import datetime
 
 class RolandNode:
 
-    def __init__(self, caller, value: str):
+    def __init__(self, caller):
         self.superitem = caller
-        self.value = value
+        self.value = None # The value of this node
+        self.remainders = [] # Unsorted items in this nodes' bucket
         self.left = None
         self.right = None
+    
+    def add_value(self, value):
+        ''' Populate current node
 
-    def sort(self, alternates):
-        if alternates:
-            self.less = []
-            self.more = []
-            for item in alternates:
-                print(f'{self.value} (1) VS {item} (2)')
-                selected = False
-                while not selected:
-                    keypress = input('')
-                    if not keypress.isdigit():
-                        print('Please type in a digit')
-                        continue
-                    keypress = int(keypress)
-                    if keypress == 1:
-                        # Need to save?
-                        self.less.append(item)
-                        selected = True
-                    elif keypress == 2:
-                        # Need to save?
-                        self.more.append(item)
-                        selected = True
-                    else:
-                        print('Please enter a value (1 or 2)')
-                self.save()
-                
-            if self.less:
-                self.left = RolandNode(self, self.less[0])
-                self.left.sort(self.less[1:])
-            if self.more:
-                self.right = RolandNode(self, self.more[0])
-                self.right.sort(self.more[1:])
+        Creates child nodes since this node is nonempty
+        '''
+        self.value = value
+        self.left = RolandNode(self)
+        self.right = RolandNode(self)
+    
+    def append_remainders(self, values: list):
+        if not self.value:
+            self.value = values[0]
+            self.left = RolandNode(self)
+            self.right = RolandNode(self)
+        else:
+            self.remainders.extend(values)
+
+    def sort(self):
+        print(f'!!! Sorting {self.value}')
+        while self.remainders:
+            item = self.remainders.pop()
+            print(f'{self.value} (1) VS {item} (2)')
+            selected = False
+            while not selected:
+                keypress = input('')
+                if not keypress.isdigit():
+                    print('Please type in a digit')
+                    continue
+
+                keypress = int(keypress)
+                if keypress == 1:
+                    # Need to save?
+                    self.left.append_remainders([item])
+                    selected = True
+
+                elif keypress == 2:
+                    # Need to save?
+                    self.right.append_remainders([item])
+                    selected = True
+                else:
+                    print('Please enter a value (1 or 2)')
+            self.save()
+        if self.left:
+            self.left.sort()
+        if self.right:
+            self.right.sort()
 
     def flatten(self) -> list:
         output = []
         if self.left:
             values_left = self.left.flatten()
             output.extend(values_left)
-        output.append(self.value)
+        if self.value:
+            output.append(self.value)
         if self.right:
             values_right = self.right.flatten()
             output.extend(values_right)
@@ -62,11 +79,12 @@ class RolandNode:
 
 class RolandTree:
     def __init__(self, items: list):
-        self.root = RolandNode(self, items[0])
-        self.remainders = items[1:]
+        self.root = RolandNode(self)
+        self.root.add_value(items[0])
+        self.root.append_remainders(items[1:])
     
     def query_sort(self):
-        self.root.sort(self.remainders)
+        self.root.sort()
     
     def __str__(self):
         print(self.root)
