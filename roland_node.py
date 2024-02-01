@@ -23,9 +23,8 @@ class RolandNode:
     
     def append_remainders(self, values: list):
         if not self.value:
-            self.value = values[0]
-        else:
-            self.remainders.extend(values)
+            self.value = values.pop(0)
+        self.remainders.extend(values)
 
     def sort(self):
         while self.remainders:
