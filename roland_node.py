@@ -26,30 +26,32 @@ class RolandNode:
             self.value = values.pop(0)
         self.remainders.extend(values)
 
+    def __handle_remainder(self):
+        print(f'{len(self.remainders)} remaining for {self.value}')
+        item = self.remainders.pop()
+        print(f'{self.value} (1) VS {item} (2)')
+        selected = False
+        while not selected:
+            keypress = input('')
+            if not keypress.isdigit():
+                print('Please type in a digit')
+                continue
+
+            keypress = int(keypress)
+            if keypress == 1:
+                self.left.append_remainders([item])
+                selected = True
+
+            elif keypress == 2:
+                self.right.append_remainders([item])
+                selected = True
+            else:
+                print('Please enter a value (1 or 2)')
+        self.save()
+
     def sort(self):
         while self.remainders:
-            item = self.remainders.pop()
-            print(f'{self.value} (1) VS {item} (2)')
-            selected = False
-            while not selected:
-                keypress = input('')
-                if not keypress.isdigit():
-                    print('Please type in a digit')
-                    continue
-
-                keypress = int(keypress)
-                if keypress == 1:
-                    # Need to save?
-                    self.left.append_remainders([item])
-                    selected = True
-
-                elif keypress == 2:
-                    # Need to save?
-                    self.right.append_remainders([item])
-                    selected = True
-                else:
-                    print('Please enter a value (1 or 2)')
-            self.save()
+            self.__handle_remainder()
         if self.left:
             self.left.sort()
         if self.right:
