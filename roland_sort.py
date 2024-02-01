@@ -9,6 +9,8 @@ from roland_tree import RolandTree
 def main(args):
     file_path = Path(args.filename)
     extension = file_path.suffix
+
+    # Handle loading in save destination
     if not args.savefile:
         presentDate = datetime.datetime.now()
         unix_timestamp = datetime.datetime.timestamp(presentDate)*1000
@@ -16,6 +18,8 @@ def main(args):
         savefile = namebody + '.npy'
     else:
         savefile = args.savefile
+
+    # Load either item file or savefile
     if extension == '.txt':
         items = []
         file = file_path.open()
@@ -29,11 +33,18 @@ def main(args):
         tree.add_savefile(savefile)
     else:
         raise Exception(f'Unrecognised file extension: {extension}')
+
     tree.query_sort()
     items_sorted = tree.sorting()
     items_sorted.reverse()
+    output = ''
     for i, item in enumerate(items_sorted):
-        print(f'{i+1}: {item}')
+        output += f'{i+1}: {item}\n'
+    print(output)
+    result_filename = tree.savefile.split('.')[0]
+    result_filename += '_results.txt'
+    resultfile = open(result_filename, 'w')
+    resultfile.write(output)
 
 
 if __name__ == "__main__":
