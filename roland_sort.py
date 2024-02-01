@@ -1,6 +1,6 @@
 
-import argparse
 from pathlib import Path
+import argparse
 import pickle
 
 class RolandNode:
@@ -15,7 +15,7 @@ class RolandNode:
             self.less = []
             self.more = []
             for item in alternates:
-                print(f'{item} vs {self.value}')
+                print(f'{self.value} (1) VS {item} (2)')
                 selected = False
                 while not selected:
                     keypress = input('')
@@ -23,20 +23,22 @@ class RolandNode:
                         print('Please type in a digit')
                         continue
                     keypress = int(keypress)
-                    if keypress == 2:
+                    if keypress == 1:
                         # Need to save?
                         self.less.append(item)
                         selected = True
-                    elif keypress == 1:
+                    elif keypress == 2:
                         # Need to save?
                         self.more.append(item)
                         selected = True
                     else:
                         print('Please enter a value (1 or 2)')
-            self.left = RolandNode(self.less[0])
-            self.right = RolandNode(self.more[0])
-            self.left.sort(self.less[1:])
-            self.right.sort(self.more[1:])
+            if self.less:
+                self.left = RolandNode(self.less[0])
+                self.left.sort(self.less[1:])
+            if self.more:
+                self.right = RolandNode(self.more[0])
+                self.right.sort(self.more[1:])
 
     def flatten(self) -> list:
         output = []
@@ -65,6 +67,7 @@ class RolandTree:
         items = self.root.flatten()
         return items
 
+
 def main(args):
     file_path = Path(args.filename)
     extension = file_path.suffix
@@ -80,7 +83,10 @@ def main(args):
         raise Exception(f'Unrecognised file extension: {extension}')
     tree.query_sort()
     items_sorted = tree.sorting()
-    print(items_sorted)
+    items_sorted.reverse()
+    for i, item in enumerate(items_sorted):
+        print(f'{i+1}: {item}')
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
