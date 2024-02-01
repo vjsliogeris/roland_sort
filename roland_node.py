@@ -24,8 +24,6 @@ class RolandNode:
     def append_remainders(self, values: list):
         if not self.value:
             self.value = values[0]
-            self.left = RolandNode(self)
-            self.right = RolandNode(self)
         else:
             self.remainders.extend(values)
 
