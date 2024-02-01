@@ -6,7 +6,7 @@ from roland_node import RolandNode
 class RolandTree:
     def __init__(self, items: list):
         self.root = RolandNode(self)
-        self.root.add_value(items[0])
+        self.root.value = items[0]
         self.root.append_remainders(items[1:])
 
         self._savefile = None

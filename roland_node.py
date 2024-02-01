@@ -2,17 +2,22 @@
 class RolandNode:
     def __init__(self, caller):
         self.superitem = caller
-        self.value = None # The value of this node
+        self._value = None # The value of this node
         self.remainders = [] # Unsorted items in this nodes' bucket
         self.left = None
         self.right = None
     
-    def add_value(self, value):
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_val):
         ''' Populate current node
 
         Creates child nodes since this node is nonempty
         '''
-        self.value = value
+        self._value = new_val
         self.left = RolandNode(self)
         self.right = RolandNode(self)
     
@@ -65,7 +70,5 @@ class RolandNode:
             output.extend(values_right)
         return output
 
-
     def save(self):
         self.superitem.save()
-
