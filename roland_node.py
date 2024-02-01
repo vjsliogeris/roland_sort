@@ -25,7 +25,6 @@ class RolandNode:
             self.remainders.extend(values)
 
     def sort(self):
-        print(f'!!! Sorting {self.value}')
         while self.remainders:
             item = self.remainders.pop()
             print(f'{self.value} (1) VS {item} (2)')

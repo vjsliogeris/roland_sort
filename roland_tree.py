@@ -10,8 +10,10 @@ class RolandTree:
         self.root.append_remainders(items[1:])
     
     def add_savefile(self, savefile):
+        ext = savefile.split('.')[1]
+        if ext != 'npy':
+            raise Exception('Please have the file extension be \'.npy\'')
         self.savefile = savefile
-        print(savefile)
     
     def query_sort(self):
         self.root.sort()
